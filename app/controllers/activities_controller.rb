@@ -1,74 +1,75 @@
 class ActivitiesController < ApplicationController
-  before_action :require_login     # Eh necessario estar logado para ver o calendario
-  before_action :admin_privileges  # Eh necessario ser admin para criar, editar e deletar uma atividade
-  skip_before_action :admin_privileges, only: [:index, :show]   # permite que usuarios nao admins consigam ver as atividades e detalhes
+  before_action :authenticate_admin!
+  before_action :set_activity, only: [:show, :edit, :update, :destroy]
 
-  def new
-    @activity = Activity.new
-  end
-
-  def create
-    @activity = Activity.new(task_params)
-    # Melhorar condição para salvar quando terminar o show do usuário
-    if @activity.save
-      flash[:created] = 'Activity created successfully!'
-      redirect_to activities_path
-    else
-      flash[:not_created] = 'Activity not created!'
-      render 'new'
-    end
-  end
-
+  # GET /activities
+  # GET /activities.json
   def index
-    @activities = Activity.all
+    @activities = Activitie.all
   end
 
+  # GET /activities/1
+  # GET /activities/1.json
   def show
-    @activity = Activity.find(params[:id])
   end
 
+  # GET /activities/new
+  def new
+    @activity = Activitie.new
+  end
+
+  # GET /activities/1/edit
   def edit
-    @activity = Activity.find(params[:id])
   end
 
+  # POST /activities
+  # POST /activities.json
+  def create
+    @activity = Activitie.new(activity_params)
+
+    respond_to do |format|
+      if @activity.save
+        format.html { redirect_to @activity, notice: 'Activitie was successfully created.' }
+        format.json { render :show, status: :created, location: @activity }
+      else
+        format.html { render :new }
+        format.json { render json: @activity.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # PATCH/PUT /activities/1
+  # PATCH/PUT /activities/1.json
   def update
-    @activity = Activity.find(params[:id])
-
-    if @activity.update(task_params)
-      flash[:updated] = "Activity updated successfully!"
-      redirect_to activity_path(params[:id])
-    else
-      flash[:not_updated] = "Taks was not updated!"
-      redirect_to edit_activities_path
+    respond_to do |format|
+      if @activity.update(activity_params)
+        format.html { redirect_to @activity, notice: 'Activitie was successfully updated.' }
+        format.json { render :show, status: :ok, location: @activity }
+      else
+        format.html { render :edit }
+        format.json { render json: @activity.errors, status: :unprocessable_entity }
+      end
     end
   end
 
+  # DELETE /activities/1
+  # DELETE /activities/1.json
   def destroy
-    @activity = Activity.find(params[:id])
-    if @activity.destroy
-      flash[:deleted] = "Activity deleted successfully!"
-    else
-      flash[:deleted] = "Activity was not deleted! Something must have gone wrong!"
+    @activity.destroy
+    respond_to do |format|
+      format.html { redirect_to activities_url, notice: 'Activitie was successfully destroyed.' }
+      format.json { head :no_content }
     end
-    redirect_to activities_path
   end
 
   private
-  def task_params
-    params.require(:activity).permit(:title, :description, :date)
-  end
-
-  def require_login
-    unless user_signed_in?
-      flash[:error] = "Login necessário para acessar essa página"
-      redirect_to root_path
+    # Use callbacks to share common setup or constraints between actions.
+    def set_activity
+      @activity = Activitie.find(params[:id])
     end
-  end
 
-  def admin_privileges
-    unless current_user.role == "administrator"
-      flash[:error] = "Conta de administrador necessaria para acessar essa página"
-      redirect_to root_path
+    # Never trust parameters from the scary internet, only allow the white list through.
+    def activity_params
+      params.require(:activitie).permit(:title, :description, :date)
     end
-  end
 end

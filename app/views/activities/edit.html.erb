@@ -1,5 +1,6 @@
-<!-- Titulo visual -->
-<h1 class="text-center">Editar Atividade</h1>
+<h1>Editing Activity</h1>
 
-<!-- Renderiza o layout parcial -->
-<%= render "form", activity: @activity%>
+<%= render 'form', activity: @activity %>
+
+<%= link_to 'Exibir', @activity %> |
+<%= link_to 'Voltar', activities_path %>

@@ -1,32 +1,32 @@
-<div class="jumbotron bg-white">
-  <div class="container">
+<%= form_with(model: activity, local: true) do |form| %>
+  <% if activity.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(activity.errors.count, "error") %> prohibited this activity from being saved:</h2>
 
-    <!-- Formulario -->
-    <%= form_with model: @activity, local: true do |form| %>
+      <ul>
+      <% activity.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
 
-      <!-- Primeiro campo do formulario -->
-      <div class="form-group">
-        <%= form.label :title, "Título" %>
-        <%= form.text_field :title, class: "form-control" %>
-      </div>
-
-      <!-- Segundo campo do formulario -->
-      <div class="form-group">
-        <%= form.label :description, "Descrição" %>
-        <%= form.text_field :description, class: "form-control" %>
-      </div>
-
-      <!-- Terceiro campo do formulario -->
-      <div class="form-group">
-        <%= form.label :date, "Data" %>
-        <%= form.date_field :date, order: [:day, :month, :year] %>
-      </div>
-
-      <!-- Botao para envio do formulario -->
-      <div class="">
-        <%= form.submit "Submeter Atividade", class: "btn btn-success" %>
-      </div>
-
-    <% end %>
+  <div class="field">
+    <%= form.label :Título %>
+    <%= form.text_field :title %>
   </div>
-</div>
+
+  <div class="field">
+    <%= form.label :Descrição %>
+    <%= form.text_area :description %>
+  </div>
+
+  <div class="field">
+    <%= form.label :Data_final %>
+    <%= form.date_select :date, order: [:day, :month, :year] %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
